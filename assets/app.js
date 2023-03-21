@@ -11,12 +11,27 @@ import './styles/app.css';
 // start the Stimulus application
 import './bootstrap';
 
-import Vue from 'vue';
-import Example from './components/Example'
-/**
- * Create a fresh Vue Application instance
- */
+import Vue from 'vue'
+import vuetify from './plugins/vuetify'
+import VueRouter from 'vue-router';
+
+import Login from './components/Login.vue'
+import UserTable from './components/UserTable.vue'
+
+Vue.use(VueRouter);
+
+const routes = [
+    {path: '/', component: Login, name: 'login'},
+    {path: '/table', component: UserTable, name: 'table'}
+]
+
+const router = new VueRouter({
+    mode: 'history',
+    routes
+})
+
 new Vue({
-    el: '#app',
-    components: {Example}
-});
+    vuetify,
+    router
+}).$mount('#app')
+
