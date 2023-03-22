@@ -42,10 +42,22 @@ export default {
     }
   },
 
-  mounted() {
-    axios.get('/api/users', {headers: {'Accept': 'application/json'}})
-        .then(response => this.users = response.data)
-        .catch(error => console.log(error.data))
+  async mounted() {
+    let status;
+
+    await axios.get('/api/users', {headers: {'Accept': 'application/json'}})
+        .then(response => {
+          this.users = response.data;
+          status = response.status
+        })
+        .catch(error => {
+          console.log(error.data);
+          status = error.response.status
+        })
+
+    if(status === 401) {
+      await this.$router.push({name: 'login'})
+    }
   }
 }
 </script>

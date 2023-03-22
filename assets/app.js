@@ -17,16 +17,19 @@ import VueRouter from 'vue-router';
 
 import Login from './components/Login.vue'
 import UserTable from './components/UserTable.vue'
+import PageNotFound from "./components/PageNotFound.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
     {path: '/', component: Login, name: 'login'},
-    {path: '/table', component: UserTable, name: 'table'}
+    {path: '/table', component: UserTable, name: 'table'},
+    {path: '/*', component: PageNotFound, name: 'table'}
 ]
 
 const router = new VueRouter({
     mode: 'history',
+    base: '/app/',
     routes
 })
 

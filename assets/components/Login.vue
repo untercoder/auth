@@ -4,10 +4,16 @@
       <v-container fluid fill-height>
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md4>
+            <h1>Форма авторизации</h1>
+            <v-alert
+                dense
+                outlined
+                type="error"
+                v-if="status === 401"
+            >
+              Неверные данные доступ запрещен!
+            </v-alert>
             <v-card class="elevation-12">
-              <v-toolbar dark color="primary">
-                <v-toolbar-title>Форма авторизации</v-toolbar-title>
-              </v-toolbar>
               <v-card-text>
                 <v-form>
                   <v-text-field
@@ -27,7 +33,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" v-on:click="AuthMethod(loginData)">Login</v-btn>
+                <v-btn color="primary" v-on:click="authMethod()">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -48,18 +54,38 @@ export default {
         username: "",
         password: ""
       },
-      authUser: []
+      authUser: [],
+      status: null
     }
   },
 
   methods: {
-    AuthMethod () {
+    async authMethod() {
 
-      axios.post('/api/login', this.loginData)
-          .then(response => this.authUser = response.data)
-          .catch(error => console.log(error.data))
+      const response = await axios.post('/api/login', this.loginData)
+          .then(response => {this.authUser = response.data; this.status = response.status})
+          .catch(error => {console.log(error.data); this.status = error.response.status})
 
-      console.log(this.authUser);
+      console.log(this.status);
+
+      if(this.status === 200) {
+        await this.$router.push({name: 'table'})
+      }
+    }
+  },
+
+  async mounted() {
+    let status;
+    const response = await axios.post('/api/login')
+        .then(response => {
+          status = response.status
+        })
+        .catch(error => {
+          status = error.response.status
+        })
+
+    if(status === 200) {
+      await this.$router.push({name: 'table'})
     }
   }
 };
